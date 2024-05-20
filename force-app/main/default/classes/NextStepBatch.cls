@@ -29,43 +29,37 @@ public with sharing class NextStepBatch implements Database.Batchable<sObject>{
         final String BATCH_NEXT_STEP = 'Batching the next meetings together.';
 
         // Update the Next Step field on each record in the batch scope.
-
         // Loop through the scope account records
-
+        for (Account acc : scope) {
             // Set the Next Step field to 'Batching the next meetings together.'
-
+            acc.Next_Step__c = BATCH_NEXT_STEP;
+        }
         // Update the account records in this batch scope
+        update scope;
         
         // Query for all opportunities related to the accounts in this batch scope
+        List<Opportunity> opps = [SELECT Id, NextStep FROM Opportunity WHERE AccountId  IN :scope];
 
         // Loop through the opportunity records
-
+        for (Opportunity opp : opps) {
             // Set the Next Step field to 'Batching the next meetings together.'
-
-        // Update the opportunity records
-
-        List<Opportunity> opps = new List<Opportunity>();
-        for (Account acc : scope) {
-            acc.Next_Step__c = BATCH_NEXT_STEP;
-            for (Opportunity opp : acc.Opportunities) {
-                opp.NextStep = BATCH_NEXT_STEP;
-                opps.add(opp);
-            }
+            opp.NextStep = BATCH_NEXT_STEP;
         }
-
+        // Update the opportunity records
         update opps;
-        update scope;
-
     }
     
     public void finish(Database.BatchableContext bc){
         final List<User> USERS = [SELECT Id, Name, Email FROM User WHERE IsActive = true AND (NOT Email LIKE 'autoproc%')]; // DO NOT CHANGE
 
         // Get the email addresses of all active users
-
+        Set<String> emails = new Set<String>();
+        for (User u : USERS) {
             // Pass the set of active user emails to the sendEmailToActiveUsers method
+            emails.add(u.Email);
+        }
         
-        System.debug('Batch finish method called.');
+        sendEmailToActiveUsers(emails);
     }
 
     // Helper method to send an email to all emails in the set
