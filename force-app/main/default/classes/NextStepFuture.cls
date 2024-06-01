@@ -29,7 +29,7 @@ public with sharing class NextStepFuture {
      */
     
     @future
-    public static void updateAccsAndOpps() {
+    public static void updateAllNextStep() {
         
         List<Account> accs = [SELECT Id, Next_Step__c FROM Account];
         for (Account acc : accs) {
