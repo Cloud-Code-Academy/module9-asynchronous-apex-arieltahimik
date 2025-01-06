@@ -22,7 +22,7 @@ public with sharing class NextStepBatch implements Database.Batchable<sObject>{
 
     public Database.QueryLocator start(Database.BatchableContext bc){
         // Query for all accounts and return the query locator.
-        return Database.getQueryLocator([SELECT Id, Next_Step__c, (SELECT Id, NextStep FROM Opportunities) FROM Account]);
+        return Database.getQueryLocator('SELECT Id, Next_Step__c FROM Account');
     }
     
     public void execute(Database.BatchableContext bc, List<Account> scope){
