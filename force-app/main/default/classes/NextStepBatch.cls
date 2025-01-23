@@ -18,7 +18,7 @@
  * 
  * Note: This class contains placeholders and commented sections that need to be updated with actual logic for querying and updating records.
  */
-public with sharing class NextStepBatch implements Database.Batchable<sObject>{
+public with sharing class NextStepBatch implements Database.Batchable<sObject>, Database.Stateful{
 
     public Database.QueryLocator start(Database.BatchableContext bc){
         // Query for all accounts and return the query locator.
@@ -31,8 +31,12 @@ public with sharing class NextStepBatch implements Database.Batchable<sObject>{
         // Update the Next Step field on each record in the batch scope.
         // Loop through the scope account records
         for (Account acc : scope) {
-            // Set the Next Step field to 'Batching the next meetings together.'
-            acc.Next_Step__c = BATCH_NEXT_STEP;
+            try {
+                // Set the Next Step field to 'Batching the next meetings together.'
+                acc.Next_Step__c = BATCH_NEXT_STEP;                
+            } catch (Exception e) {
+                System.debug('The following exception has occurred: ' + e.getMessage());
+            }
         }
         // Update the account records in this batch scope
         update scope;

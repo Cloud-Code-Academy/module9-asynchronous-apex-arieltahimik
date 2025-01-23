@@ -67,8 +67,14 @@ public with sharing class NextStepQueueable implements Queueable {
         // Update the opportunities
         update opportunities;
 
-        // Call the enqueueJob method to queue another job to process more records.
-        enqueueJob();
+        if (
+            System.AsyncInfo.hasMaxStackDepth() &&
+            AsyncInfo.getCurrentQueueableStackDepth() <
+            AsyncInfo.getMaximumQueueableStackDepth()
+        ) {
+            // Call the enqueueJob method to queue another job to process more records.
+            enqueueJob();
+        }
     }
 
     // Helper method to remove the Next Step

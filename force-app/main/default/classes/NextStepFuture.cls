@@ -31,16 +31,20 @@ public with sharing class NextStepFuture {
     @future
     public static void updateAllNextStep() {
         
+        final String NEXT_STEP_STRING = 'Meeting in the future';
+        
         List<Account> accs = [SELECT Id, Next_Step__c FROM Account];
         for (Account acc : accs) {
-            acc.Next_Step__c = 'Meeting in the future';
+            // acc.Next_Step__c = 'Meeting in the future';
+            acc.Next_Step__c = NEXT_STEP_STRING;
         }
         update accs;
 
         
         List<Opportunity> opps = [SELECT Id, NextStep FROM Opportunity WHERE AccountId IN :accs];
         for (Opportunity opp : opps) {
-            opp.NextStep = 'Meeting in the future';
+            //opp.NextStep = 'Meeting in the future';
+            opp.NextStep = NEXT_STEP_STRING;
         }
         update opps;
 
